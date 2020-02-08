@@ -21,3 +21,11 @@ type RequestVoteResp struct {
 	// Vote received status
 	VoteGranted bool
 }
+
+type AppendEntriesArgs struct {
+	// TODO
+}
+
+type AppendEntriesResp struct {
+	// TODO
+}

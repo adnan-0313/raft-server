@@ -1,18 +1,20 @@
 package raft
 
-import "net"
+import (
+	"net"
+)
 
 type RPCResponse struct {
 	Response interface{}
-	Error error
+	Error    error
 }
 
 type RPC struct {
-	Command interface{}
+	Command  interface{}
 	RespChan chan<- RPCResponse
 }
 
-func (r* RPC) Respond(resp interface{}, err error) {
+func (r *RPC) Respond(resp interface{}, err error) {
 	r.RespChan <- RPCResponse{resp, err}
 }
 
@@ -24,8 +26,8 @@ type Transport interface {
 	Consumer() <-chan RPC
 
 	// AppendEntries sends the appropriate RPC to the target node
-	AppendEntries(target net.Addr, args *AppendEntriesRequest, resp *AppendEntriesResponse) error
+	AppendEntries(target net.Addr, args *AppendEntriesArgs, resp *AppendEntriesResp) error
 
 	// RequestVote sends the appropriate RPC to the target node
-	RequestVote(target net.Addr, args *RequestVoteRequest, resp *RequestVoteResponse) error
+	RequestVote(target net.Addr, args *RequestVoteArgs, resp *RequestVoteResp) error
 }

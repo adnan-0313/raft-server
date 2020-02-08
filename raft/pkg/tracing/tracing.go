@@ -21,7 +21,6 @@ func Init(serviceName string, logger *zap.Logger) (opentracing.Tracer, io.Closer
 	cfg.Sampler.Type = "const"
 	cfg.Sampler.Param = 1
 
-
 	jLogger := zwrap.NewLogger(logger)
 
 	tracer, closer, _ := cfg.NewTracer(
