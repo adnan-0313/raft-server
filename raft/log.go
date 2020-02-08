@@ -14,7 +14,10 @@ type Log struct {
 // and retrieving logs in a durable fashion
 type LogStore interface {
 	// Returns the last index written. 0 for no entries.
-	LastIndex() (uint64, error)
+	LastIndex() uint64
+
+	// Returns the last term written. 0 for no entries
+	LastTerm() uint64
 
 	// Gets a log entry at a given index
 	GetLog(index uint64) (*Log, error)
@@ -41,28 +44,26 @@ func (l *LogStorage) Empty() bool {
 	return false
 }
 
-func (l *LogStorage) LastIndex() (uint64, error) {
+func (l *LogStorage) LastIndex() uint64 {
 	if !l.Empty() {
-		return l.records[len(l.records)-1].Index, nil
+		return l.records[len(l.records)-1].Index
 	}
-	return 0, errors.New("no logs found")
+	return 0
 }
 
-func (l *LogStorage) LastTerm() (uint64, error) {
+func (l *LogStorage) LastTerm() uint64 {
 	if l.Empty() {
-		return 0, errors.New("no logs found")
+		return 0
 	}
-
-	idx, err := l.LastIndex()
-	if err != nil {
-		return 0, err
+	idx := l.LastIndex()
+	if idx == 0 {
+		return 0
 	}
 	logEntry, err := l.GetLog(idx)
 	if err != nil {
-		return 0, err
+		return 0
 	}
-
-	return logEntry.Term, nil
+	return logEntry.Term
 }
 
 func (l *LogStorage) GetLog(index uint64) (*Log, error) {
